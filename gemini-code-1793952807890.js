@@ -4331,7 +4331,6 @@
       Lampa.Template.add('lampac_prestige_watched', "<div class=\"online-prestige online-prestige-watched selector\">\n            <div class=\"online-prestige-watched__icon\">\n                <svg width=\"21\" height=\"21\" viewBox=\"0 0 21 21\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                    <circle cx=\"10.5\" cy=\"10.5\" r=\"9\" stroke=\"currentColor\" stroke-width=\"3\"/>\n                    <path d=\"M14.8477 10.5628L8.20312 14.399L8.20313 6.72656L14.8477 10.5628Z\" fill=\"currentColor\"/>\n                </svg>\n            </div>\n            <div class=\"online-prestige-watched__body\">\n                \n            </div>\n        </div>");
     }
 
-    // [PATCH] Додано клас lampac--button для уникнення дублювання кнопки
     var button = '<div class="full-start__button selector view--online lampac--button" data-subtitle="' + manifst.name + '">' +
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 29" fill="none">' +
         '<g transform="translate(14 14.5) scale(1.14) translate(-14 -14.5)">' +
@@ -4418,6 +4417,25 @@
     };
   };
 
-  if (!window.gpbay_plugin) startPlugin();
+  function gpbayBootSafe() {
+    if (window.gpbay_plugin) return;
+    try {
+      if (typeof window.Lampa !== 'undefined' &&
+          Lampa.Platform &&
+          Lampa.Storage &&
+          Lampa.Manifest &&
+          Lampa.Template &&
+          Lampa.Listener &&
+          typeof window.$ !== 'undefined') {
+        startPlugin();
+      } else {
+        setTimeout(gpbayBootSafe, 150);
+      }
+    } catch (e) {
+      console.error('[GPBAY BOOT ERROR]:', e);
+    }
+  }
+
+  gpbayBootSafe();
 
 })();
